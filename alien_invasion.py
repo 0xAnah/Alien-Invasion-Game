@@ -51,6 +51,20 @@ class AlienInvasion:
             current_x = alien_width
             current_y += 2 * alien_height
 
+    def _check_fleet_edges(self):
+        """respond appropriately if any aliens have reached and edge"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+    
+    def _change_fleet_direction(self):
+        """drop the entire fleet and change the fleets direction"""
+        for alien in self.aliens.sprites():
+            alien.rect.y +=self.settings.fleet_drop_speed
+        
+        self.settings.fleet_direction *= -1
+
 
     def _fire_bullet(self):
         """creats a new bullet and adds it to the group"""
@@ -120,6 +134,11 @@ class AlienInvasion:
         pygame.display.flip()
         
 
+    def _update_aliens(self):
+        """check if the fleet is at the edge then update the positions"""
+        self._check_fleet_edges()
+        self.aliens.update()
+
     def run_game(self):
         """Start the main loop for the game"""
         while True:
@@ -127,8 +146,8 @@ class AlienInvasion:
             self.ship.update()
             self._update_bullets()
             self._update_screen()
+            self._update_aliens()
             self.clock.tick(60)
-
 
 
 if __name__ == "__main__":
